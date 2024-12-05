@@ -16,3 +16,7 @@ prompt2-park
 就按空位多的停的parkingboy，你需要在请求前，填充一下3个parkinglot，出现一个空位多的，然后发请求，得到的结果就是停在空位多的
 给一个测试，若parkingtype不存在，判断是否返回异常信息
 
+prompt3-fetch
+生成fetch的方法，参数有ticket，返回car
+生成fetchapi，路径为/fetch，参数有ticket，方法体调用service的对应方法
+生成fetchapi的测试，名称为should_when_given的格式，判断返回的ticket是否正确
