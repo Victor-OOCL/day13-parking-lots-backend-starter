@@ -1,7 +1,7 @@
 package org.afs.pakinglot.domain;
 
-public enum ParkingBoyType {
-    STANDARD,
-    SMART,
-    SUPER_SMART
+public class ParkingBoyType {
+    public static final String STANDARD = "STANDARD";
+    public static final String SMART = "SMART";
+    public static final String SUPER_SMART = "SUPER_SMART";
 }

@@ -1,17 +1,17 @@
 package org.afs.pakinglot.domain.controller;
 
+import org.afs.pakinglot.domain.Car;
 import org.afs.pakinglot.domain.ParkingLot;
+import org.afs.pakinglot.domain.Ticket;
 import org.afs.pakinglot.domain.response.ApiResponse;
 import org.afs.pakinglot.domain.service.ParkingLotService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/parking-lot")
+@RequestMapping("/parking-lots")
 public class ParkingLotController {
     private final ParkingLotService parkingLotService;
 
@@ -23,5 +23,10 @@ public class ParkingLotController {
     @GetMapping
     public ApiResponse<List<ParkingLot>> getAllParkingLots() {
         return parkingLotService.getAllParkingLots();
+    }
+
+    @PostMapping("/park")
+    public ApiResponse<Ticket> park(@RequestParam String parkingBoyType, @RequestBody Car car) {
+        return parkingLotService.park(parkingBoyType, car);
     }
 }
