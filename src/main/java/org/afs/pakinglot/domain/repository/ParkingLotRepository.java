@@ -36,4 +36,12 @@ public class ParkingLotRepository {
         }
         return parkingBoy.park(car);
     }
+
+    public Car fetch(String parkingBoyType, Ticket ticket) {
+        ParkingBoy parkingBoy = parkingBoys.get(parkingBoyType);
+        if (parkingBoy == null) {
+            return null;
+        }
+        return parkingBoy.fetch(ticket);
+    }
 }

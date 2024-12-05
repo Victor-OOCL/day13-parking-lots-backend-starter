@@ -1,16 +1,21 @@
 package org.afs.pakinglot.domain.api;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.afs.pakinglot.domain.Car;
 import org.afs.pakinglot.domain.ParkingBoyType;
 import org.afs.pakinglot.domain.ParkingLot;
+import org.afs.pakinglot.domain.Ticket;
 import org.afs.pakinglot.domain.controller.ParkingLotController;
 import org.afs.pakinglot.domain.repository.ParkingLotRepository;
+import org.afs.pakinglot.domain.response.ApiResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
@@ -18,7 +23,8 @@ import java.util.stream.IntStream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 public class ParkingLotApiTest {
@@ -134,5 +140,38 @@ public class ParkingLotApiTest {
                         .content("{\"plateNumber\":\"XYZ123\"}"))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.message").value("Invalid parking boy type"));
+    }
+
+    @Test
+    public void should_returnCar_when_fetch_givenValidTicketAndParkingBoyType() throws Exception {
+        // Arrange
+        Car car = new Car("ABC123");
+        String parkingBoyType = ParkingBoyType.STANDARD;
+
+        // Park the car and get the ticket
+        MvcResult parkResult = mockMvc.perform(post("/parking-lots/park")
+                        .param("parkingBoyType", parkingBoyType)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"plateNumber\":\"ABC123\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.message").value("Success"))
+                .andExpect(jsonPath("$.data.plateNumber").value("ABC123"))
+                .andReturn();
+
+        String resultJson = parkResult.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ApiResponse<Ticket> apiResponse = objectMapper.readValue(resultJson, new TypeReference<ApiResponse<Ticket>>() {
+        });
+
+        // Act & Assert
+        mockMvc.perform(post("/parking-lots/fetch")
+                        .param("parkingBoyType", parkingBoyType)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(apiResponse.getData())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.message").value("Success"))
+                .andExpect(jsonPath("$.data.plateNumber").value("ABC123"));
     }
 }

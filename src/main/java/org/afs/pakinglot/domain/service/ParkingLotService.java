@@ -30,4 +30,9 @@ public class ParkingLotService {
         Ticket ticket = parkingLotRepository.park(parkingBoyType, car);
         return Objects.isNull(ticket) ? ApiResponse.error(400, "Invalid parking boy type") : ApiResponse.success(ticket);
     }
+
+    public ApiResponse<Car> fetch(String parkingBoyType, Ticket ticket) {
+        Car car = parkingLotRepository.fetch(parkingBoyType, ticket);
+        return Objects.isNull(car) ? ApiResponse.error(400, "Invalid parking boy type") : ApiResponse.success(car);
+    }
 }

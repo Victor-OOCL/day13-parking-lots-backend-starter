@@ -29,4 +29,9 @@ public class ParkingLotController {
     public ApiResponse<Ticket> park(@RequestParam String parkingBoyType, @RequestBody Car car) {
         return parkingLotService.park(parkingBoyType, car);
     }
+
+    @PostMapping("/fetch")
+    public ApiResponse<Car> fetch(@RequestParam String parkingBoyType, @RequestBody Ticket ticket) {
+        return parkingLotService.fetch(parkingBoyType, ticket);
+    }
 }
